@@ -4,7 +4,6 @@ package com.example.hung.popmovies;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.mTitleView.setText(movie.getTitle());
 
         String posterUrl = movie.getPosterUrl();
-        Log.v(log_tag, posterUrl);
+        //Log.v(log_tag, posterUrl);
 
         // Warning: onError() will not be called, if url is null.
         // Empty url leads to app crash.

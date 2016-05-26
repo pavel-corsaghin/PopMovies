@@ -17,12 +17,10 @@ import java.util.ArrayList;
  */
 public class FragmentMain extends Fragment {
 
-//    @Bind(R.id.movie_list)
     RecyclerView mRecyclerView;
 
-//    Movie
-
     public MovieAdapter mAdapter;
+    private String log = FragmentMain.class.getSimpleName();
 
     public FragmentMain() {
     }
@@ -42,6 +40,5 @@ public class FragmentMain extends Fragment {
         fmt.execute();
         return myView;
     }
-
 
 }
