@@ -1,0 +1,14 @@
+<resources>
+    <!--for app-->
+    <string name="app_name">Pop Movie</string>
+    <string name="action_settings">Settings</string>
+
+    <!--for menu-->
+    <string name="sort_by">Sort by</string>
+    <string name="most_popular">Most popular</string>
+    <string name="top_rated">Top rated</string>
+    <string name="favorites">Favorites</string>
+
+
+
+</resources>
