@@ -1,1 +1,1 @@
-# PopMovies this is my app, whole i am started when learn android 's programming!
+# PopMovies this is my app, which i am started when learn android 's programming!
