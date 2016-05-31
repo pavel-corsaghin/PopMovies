@@ -7,14 +7,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-    <style name="AppTheme.WithActionBar">
-        <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">false</item>
+    <style name="Button" parent="Base.Widget.AppCompat.Button">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:paddingBottom">@dimen/button_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingTop">@dimen/button_vertical_padding</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="Button_red" parent="Button">
+        <item name="colorButtonNormal">@color/red</item>
+    </style>
 
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
+    <style name="Button_blue" parent="Button">
+        <item name="colorButtonNormal">@color/blue</item>
+    </style>
 </resources>

@@ -33,7 +33,6 @@ import java.util.Locale;
 public class Movie implements Parcelable {
 
     public static final String LOG_TAG = Movie.class.getSimpleName();
-    public static final float POSTER_ASPECT_RATIO = 1.5f;
 
     @SerializedName("id")
     private long mId;

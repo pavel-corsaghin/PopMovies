@@ -1,6 +1,7 @@
 package com.example.hung.popmovies;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -15,34 +16,37 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by phoenix on 25/05/2016.
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-    private final String log_tag = this.getClass().getSimpleName();
+    private final String log = this.getClass().getSimpleName();
     ArrayList<Movie> mMovies;
+    private Callbacks mCallbacks;
 
-    public MovieAdapter(ArrayList<Movie> Movie) {
-        this.mMovies = Movie;
+    public interface Callbacks {
+        void onMovieSelected(Movie movie, int position);
+    }
+
+    public MovieAdapter(ArrayList<Movie> movies, Activity activity) {
+        mMovies = movies;
+        mCallbacks = (Callbacks) activity;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemview = LayoutInflater.from(parent.getContext())
+        View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_list_content, parent, false);
 
         int gridColsNumber = 2;
+        itemView.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber * Utility.POSTER_ASPECT_RATIO);
 
-        itemview.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber * 1.5);
-
-        return new ViewHolder(itemview);
+        return new ViewHolder(itemView);
     }
 
-
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Movie movie = mMovies.get(position);
         final Context context = holder.mView.getContext();
 
@@ -50,13 +54,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.mTitleView.setText(movie.getTitle());
 
         String posterUrl = movie.getPosterUrl();
-        //Log.v(log_tag, posterUrl);
+        //Log.v(log, posterUrl);
 
-        // Warning: onError() will not be called, if url is null.
-        // Empty url leads to app crash.
         if (posterUrl == null) {
             holder.mTitleView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             Picasso.with(context)
                     .load(posterUrl)
                     .config(Bitmap.Config.RGB_565)
@@ -78,11 +80,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     );
         }
 
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallbacks.onMovieSelected(movie, holder.getAdapterPosition());
+//                Toast.makeText(context, "movie" + position + "selected", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
-        return mMovies.size();
+        if(mMovies!=null){
+            return mMovies.size();
+        } else {
+            return 0;
+        }
+//        return 20;
     }
 
     @Override
@@ -117,9 +133,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     }
 
-    public void add(List<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
+    public void updateAdapter(ArrayList<Movie> movies) {
+        if (mMovies!= null) {
+            mMovies.clear();
+        }
+        mMovies=movies;
         notifyDataSetChanged();
     }
 }

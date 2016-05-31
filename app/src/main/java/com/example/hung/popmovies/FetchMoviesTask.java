@@ -1,9 +1,15 @@
 package com.example.hung.popmovies;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
+import com.example.hung.popmovies.db.MovieContract;
 import com.example.hung.popmovies.net.ApiServices;
 import com.example.hung.popmovies.net.Movie;
 import com.example.hung.popmovies.net.Movies;
@@ -23,31 +29,39 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 
     String log_tag = this.getClass().getSimpleName();
     Activity mActivity;
-    MovieAdapter mAdapter;
+//    MovieAdapter mAdapter;
+
+    public interface Callbacks{
+        void onFetchMoviesFinished();
+    }
 
 
-    public FetchMoviesTask(Activity activity, MovieAdapter adapter){
+    public FetchMoviesTask(Activity activity){
         mActivity = activity;
-        mAdapter = adapter;
     }
     @Override
     protected ArrayList<Movie> doInBackground(Void... params) {
 
 //        HttpURLConnection urlConnection = null;
 //        BufferedReader reader = null;
+        String SortBy = Utility.getSortByType(mActivity);
 //
 //        // Will contain the raw JSON response as a string.
 //        String resultJson = null;
 //
 //        try{
 //
-//            String baseUrl = "https://api.themoviedb.org/3/movie/popular?";
-//            String ApiKey = "api_key";
-//            Uri builtUri = Uri.parse(baseUrl).buildUpon()
-//                    .appendQueryParameter(ApiKey,BuildConfig.OPEN_MOVIE_API_KEY)
-//                    .build();
-//
-//            URL url = new URL(builtUri.toString());
+////            String baseUrl = "https://api.themoviedb.org/3/movie/";
+////
+////            String apiKey = "api_key";
+//////            String sortBy = "sort_by";
+////            Uri builtUri = Uri.parse(baseUrl).buildUpon()
+////                    .appendPath(SortBy)
+////                    .appendQueryParameter(apiKey,BuildConfig.OPEN_MOVIE_API_KEY)
+////                    .build();
+////
+////            URL url = new URL(builtUri.toString());
+//            Log.v(log_tag,builtUri.toString());
 //
 //            urlConnection = (HttpURLConnection) url.openConnection();
 //            urlConnection.setRequestMethod("GET");
@@ -81,14 +95,48 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
                 .build();
 
         ApiServices service = retrofit.create(ApiServices.class);
-        String SortBy = Utility.getSortByType(mActivity);
-        Log.v(log_tag, SortBy);
+//        Log.v(log_tag, SortBy);
         Call<Movies> call = service.getMovies(SortBy,BuildConfig.OPEN_MOVIE_API_KEY);
 
         try {
             Response<Movies> response = call.execute();
             Movies movies = response.body();
-            return movies.getMovies();
+
+            ArrayList<Movie> arrayMovies = movies.getMovies();
+            ContentValues[] arrayContentValues = new ContentValues[arrayMovies.size()];
+
+            if(arrayMovies.size()!=0){
+
+
+                for(int i = 0; i < arrayMovies.size(); i++){
+                    Movie movie = arrayMovies.get(i);
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(MovieContract.MovieEntry.SORT_BY, SortBy);
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_ID, movie.getId());
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, movie.getTitle());
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER, movie.getPoster());
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, movie.getOverview());
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_USER_RATING, movie.getUserRating());
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getReleaseDate());
+                    contentValues.put(MovieContract.MovieEntry.MOVIE_BACKDROP_PATH, movie.getBackdrop());
+                    arrayContentValues[i] = contentValues;
+                }
+            }
+
+            int inserted = 0;
+            int deleted = 0;
+
+            // update to database
+            if (arrayContentValues.length > 0) {
+                Uri uri = MovieContract.MovieEntry.getMoviesUriFromSortByType(SortBy);
+                deleted = mActivity.getContentResolver().delete(uri,null,null);
+                inserted = mActivity.getContentResolver().bulkInsert(uri, arrayContentValues);
+            }
+            Log.d(log_tag, deleted + "Movies deleted from db");
+
+            Log.d(log_tag, "FetchMoviesTask complete. " + inserted + " Inserted");
+
+            return arrayMovies;
 
         } catch (IOException e) {
             Log.e(log_tag, "A problem occurred talking to the movie db ", e);
@@ -100,7 +148,17 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
     @Override
     protected void onPostExecute(ArrayList<Movie> moviePosterPathArray) {
         super.onPostExecute(moviePosterPathArray);
-        mAdapter.add(moviePosterPathArray);
+        RecyclerView recyclerView = (RecyclerView)mActivity.findViewById(R.id.movie_list);
+        TextView textView =(TextView) mActivity.findViewById(R.id.warning_missing_internet);
+
+        if(moviePosterPathArray!=null){
+            ((Callbacks)mActivity).onFetchMoviesFinished();
+            recyclerView.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.INVISIBLE);
+        } else {
+            recyclerView.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -134,7 +192,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 //                String backdrop = moviesArray.getJSONObject(i).getString(FMT_Backdrop);
 //
 //                movie = new Movie(id, title, poster, overview, userRating,releaseDate,backdrop);
-//                movieArrayFromJason.add(movie);
+//                movieArrayFromJason.fillAdapter(movie);
 //
 //            }
 //
@@ -145,7 +203,6 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 
 
 
-//        Log.v(log_tag, retrofit + "");
 //        return movieArrayFromJason;
 //        return null;
 //    }
