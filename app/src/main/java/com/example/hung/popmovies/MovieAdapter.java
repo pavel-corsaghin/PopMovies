@@ -1,7 +1,6 @@
 package com.example.hung.popmovies;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -26,10 +25,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private Callbacks mCallbacks;
 
     public interface Callbacks {
-        void onMovieSelected(Movie movie, int position);
+        void onMovieSelected(Movie movie);
     }
 
-    public MovieAdapter(ArrayList<Movie> movies, Activity activity) {
+    public MovieAdapter(ArrayList<Movie> movies, Context activity) {
         mMovies = movies;
         mCallbacks = (Callbacks) activity;
     }
@@ -46,44 +45,44 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         final Movie movie = mMovies.get(position);
-        final Context context = holder.mView.getContext();
+        final Context context = viewHolder.mView.getContext();
 
-        holder.mMovie = movie;
-        holder.mTitleView.setText(movie.getTitle());
+        viewHolder.mMovie = movie;
+        viewHolder.mTitleView.setText(movie.getTitle());
 
         String posterUrl = movie.getPosterUrl();
-        //Log.v(log, posterUrl);
+//        Log.v(log, posterUrl);
 
         if (posterUrl == null) {
-            holder.mTitleView.setVisibility(View.VISIBLE);
+            viewHolder.mTitleView.setVisibility(View.VISIBLE);
         } else {
             Picasso.with(context)
                     .load(posterUrl)
                     .config(Bitmap.Config.RGB_565)
-                    .into(holder.mThumbnailView, new Callback() {
+                    .into(viewHolder.mThumbnailView, new Callback() {
                                 @Override
                                 public void onSuccess() {
-                                    if (holder.mMovie.getId() != movie.getId()) {
-                                        holder.cleanUp();
+                                    if (viewHolder.mMovie.getId() != movie.getId()) {
+                                        viewHolder.cleanUp();
                                     } else {
-                                        holder.mThumbnailView.setVisibility(View.VISIBLE);
+                                        viewHolder.mThumbnailView.setVisibility(View.VISIBLE);
                                     }
                                 }
 
                                 @Override
                                 public void onError() {
-                                    holder.mTitleView.setVisibility(View.VISIBLE);
+                                    viewHolder.mTitleView.setVisibility(View.VISIBLE);
                                 }
                             }
                     );
         }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallbacks.onMovieSelected(movie, holder.getAdapterPosition());
+                mCallbacks.onMovieSelected(movie);
 //                Toast.makeText(context, "movie" + position + "selected", Toast.LENGTH_SHORT).show();
 
             }
@@ -109,15 +108,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        //        @Bind(R.id.thumbnail)
         ImageView mThumbnailView;
-        //        @Bind(R.id.title)
         TextView mTitleView;
         public Movie mMovie;
 
         public ViewHolder(View view) {
             super(view);
-//            ButterKnife.bind(this, view);
             mView = view;
             mThumbnailView = (ImageView) mView.findViewById(R.id.thumbnail);
             mTitleView = (TextView) mView.findViewById(R.id.title);

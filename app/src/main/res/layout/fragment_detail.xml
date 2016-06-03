@@ -2,37 +2,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/detail_horizontal_margin"
-            android:paddingRight="@dimen/detail_horizontal_margin">
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
 
             <ImageView
                 android:id="@+id/movie_poster"
-                android:layout_width="@dimen/movie_poster_width_for_detail"
-                android:layout_height="@dimen/movie_poster_height_for_detail"
-                android:layout_marginBottom="@dimen/movie_poster_vertical_padding"
-                android:layout_marginRight="@dimen/movie_poster_padding_right"
-                android:layout_marginLeft="4sp"
-                android:layout_marginTop="4sp"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
                 android:src="@drawable/xmen_poster"
                 android:scaleType="fitXY" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -40,9 +41,10 @@
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4sp"
+                    android:layout_marginLeft="4dp"
                     android:textIsSelectable="true"
                     android:textStyle="bold"
+                    android:textColor="@android:color/black"
                     android:text="X-Men: Apocalypse"/>
 
                 <TextView
@@ -50,7 +52,7 @@
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4sp"
+                    android:layout_marginLeft="4dp"
                     android:textIsSelectable="true"
                     android:text="18-05-2016"/>
 
@@ -59,7 +61,7 @@
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4sp"
+                    android:layout_marginLeft="4dp"
                     android:textIsSelectable="true"
                     android:text="120 minutes"/>
 
@@ -94,26 +96,27 @@
             style="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="16sp"
-            android:paddingRight="16sp"
-            android:paddingTop="16sp"
-            android:textIsSelectable="true"
-            android:gravity="start"
-            android:text="@string/raw_overview"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/black"
+            android:textIsSelectable="true"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/trailer_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/trailer_list_vertical_padding"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             tools:listitem="@layout/trailer_list_content" />
 
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
             android:id="@+id/review_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/review_list_content" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical" />
 
     </LinearLayout>
 </ScrollView>

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hung.popmovies.db.MovieContract;
+import com.example.hung.popmovies.net.FetchMoviesTask;
 import com.example.hung.popmovies.net.Movie;
 
 import java.util.ArrayList;
@@ -62,7 +63,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onStart() {
         Log.v(log, "onStart");
         super.onStart();
-        fetchMovies();
+        if(!Utility.FAVORITES.equals(Utility.getSortByType(getActivity()))){
+            fetchMovies();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        Log.v(log, "onResume");
+        super.onResume();
+        getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
     }
 
     @Override
@@ -101,6 +111,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if(!sortBy.equals(Utility.FAVORITES)){
             fetchMovies();
         }
+        else {
+            getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
+        }
     }
     public void onFetchFinished(){
         Log.v(log, "onFetchFinished");
@@ -111,4 +124,5 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         FetchMoviesTask fmt = new FetchMoviesTask(getActivity());
         fmt.execute();
     }
+
 }

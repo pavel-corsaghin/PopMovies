@@ -18,21 +18,17 @@ package com.example.hung.popmovies.net;
 
 import android.content.Context;
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
+import com.example.hung.popmovies.R;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.io.Serializable;
 
-public class Movie implements Parcelable {
+//public class Movie implements Parcelable {
+public class Movie implements Serializable {
 
-    public static final String LOG_TAG = Movie.class.getSimpleName();
+    public static final String log = Movie.class.getSimpleName();
 
     @SerializedName("id")
     private long mId;
@@ -78,8 +74,6 @@ public class Movie implements Parcelable {
         if (mPoster != null && !mPoster.isEmpty()) {
             return "http://image.tmdb.org/t/p/w342" + mPoster;
         }
-        // IllegalArgumentException: Path must not be empty. at com.squareup.picasso.Picasso.load.
-        // Placeholder/Error/Title will be shown instead of a crash.
         return null;
     }
 
@@ -87,23 +81,6 @@ public class Movie implements Parcelable {
         return mPoster;
     }
 
-    public String getReleaseDate(Context context) {
-        String inputPattern = "yyyy-MM-dd";
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
-        if (mReleaseDate != null && !mReleaseDate.isEmpty()) {
-            try {
-                Date date = inputFormat.parse(mReleaseDate);
-                return DateFormat.getDateInstance().format(date);
-            } catch (ParseException e) {
-                Log.e(LOG_TAG, "The Release data was not parsed successfully: " + mReleaseDate);
-                // Return not formatted date
-            }
-        } else {
-            mReleaseDate = "Release date is unknown";
-        }
-
-        return mReleaseDate;
-    }
 
     public String getReleaseDate() {
         return mReleaseDate;
@@ -122,9 +99,8 @@ public class Movie implements Parcelable {
     @Nullable
     public String getBackdropUrl(Context context) {
         if (mBackdrop != null && !mBackdrop.isEmpty()) {
-            return "http://image.tmdb.org/t/p/original" + mBackdrop;
+            return R.string.base_url_for_downloading_backdrop + mBackdrop;
         }
-        // Placeholder/Error/Title will be shown instead of a crash.
         return null;
     }
 
@@ -132,23 +108,23 @@ public class Movie implements Parcelable {
         return mBackdrop;
     }
 
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        public Movie createFromParcel(Parcel source) {
-            Movie movie = new Movie();
-            movie.mId = source.readLong();
-            movie.mTitle = source.readString();
-            movie.mPoster = source.readString();
-            movie.mOverview = source.readString();
-            movie.mUserRating = source.readString();
-            movie.mReleaseDate = source.readString();
-            movie.mBackdrop = source.readString();
-            return movie;
-        }
-
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
+//    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+//        public Movie createFromParcel(Parcel source) {
+//            Movie movie = new Movie();
+//            movie.mId = source.readLong();
+//            movie.mTitle = source.readString();
+//            movie.mPoster = source.readString();
+//            movie.mOverview = source.readString();
+//            movie.mUserRating = source.readString();
+//            movie.mReleaseDate = source.readString();
+//            movie.mBackdrop = source.readString();
+//            return movie;
+//        }
+//
+//        public Movie[] newArray(int size) {
+//            return new Movie[size];
+//        }
+//    };
 
     public int describeContents() {
         return 0;

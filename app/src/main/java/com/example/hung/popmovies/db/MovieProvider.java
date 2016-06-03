@@ -68,6 +68,7 @@ public class MovieProvider extends ContentProvider {
         int testMatch = mUriMatcher.match(uri);
         String sortBy = MovieEntry.getSortByTypeFromUri(uri);
         Log.v(log, uri + "");
+        Log.v(log, testMatch + "");
         switch (mUriMatcher.match(uri)){
             //"movies"
             case MOVIES:
@@ -89,7 +90,7 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_ID:
                 Long movieId = MovieEntry.getMovieIdFromUri(uri);
                 selection = MovieEntry.TABLE_NAME + "."+
-                        MovieEntry.SORT_BY + " = ? AND" +
+                        MovieEntry.SORT_BY + " = ? AND " +
                         MovieEntry.MOVIE_ID +
                         " = ?";
                 selectionArgs = new String[]{sortBy,Long.toString(movieId)};
@@ -130,11 +131,12 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_ID:
                 Long movieId = MovieEntry.getMovieIdFromUri(uri);
                 selection = MovieEntry.TABLE_NAME + "."+
-                        MovieEntry.SORT_BY + " = ? AND" +
+                        MovieEntry.SORT_BY + " = ? AND " +
                         MovieEntry.MOVIE_ID +
                         " = ?";
                 selectionArgs = new String[]{sortBy,Long.toString(movieId)};
                 rowsDeleted = db.delete(MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

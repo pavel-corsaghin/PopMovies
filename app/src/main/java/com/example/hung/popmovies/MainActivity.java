@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.hung.popmovies.net.FetchMoviesTask;
 import com.example.hung.popmovies.net.Movie;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.Callbacks, FetchMoviesTask.Callbacks {
@@ -56,16 +57,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Call
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId != R.id.menu_settings) {
-            String sortBy = Utility.getSortByTypeById(itemId);
-            if (!mSortBy.equals(sortBy)) {
-                item.setChecked(true);
-                mSortBy = sortBy;
-                Utility.saveSortByType(mSortBy, this);
-                MainFragment mf = (MainFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_main_movies);
-                mf.onSortByChanged(sortBy);
-            }
+        String sortBy = Utility.getSortByTypeById(itemId);
+        if (!mSortBy.equals(sortBy)) {
+            item.setChecked(true);
+            mSortBy = sortBy;
+            Utility.saveSortByType(mSortBy, this);
+            MainFragment mf = (MainFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment_main_movies);
+            mf.onSortByChanged(sortBy);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -78,8 +77,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Call
     }
 
     @Override
-    public void onMovieSelected(Movie movie, int position) {
+    public void onMovieSelected(Movie movie) {
+        Log.v(log, "onMovieSelected: " + movie.getId());
         Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(Utility.MOVIE, movie);
         startActivity(intent);
     }
 

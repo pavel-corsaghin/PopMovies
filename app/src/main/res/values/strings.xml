@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <!--for app-->
     <string name="app_name">Pop Movie</string>
     <string name="action_settings">Settings</string>
@@ -12,6 +12,8 @@
 
     <!--for MainFragment-->
     <string name="missing_internet">Internet connection is missing!</string>
+    <string name="base_url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
+    <string name="base_url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
 
     <!--for content provider-->
     <string name="sync_account_type">popmovies.example.com</string>
@@ -21,9 +23,8 @@
     <string name="watch_trailer">Watch trailer</string>
     <string name="add_to_favorites">Mark as favorite</string>
     <string name="remove_from_favorites">Remove from favorites</string>
-    <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
-    <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
+    <string name="url_for_downloading_trailer_thumbail">http://img.youtube.com/vi/<xliff:g id="trailer key">%1$s</xliff:g>/0.jpg</string>
     <string name="raw_overview">Since the dawn of civilization, he was worshipped as a god. Apocalypse, the first and most powerful mutant from Marvel’s X-Men universe, amassed the powers of many other mutants, becoming immortal and invincible. Upon awakening after thousands of years, he is disillusioned with the world as he finds it and recruits a team of powerful mutants, including a disheartened Magneto, to cleanse mankind and create a new world order, over which he will reign. As the fate of the Earth hangs in the balance, Raven with the help of Professor X must lead a team of young X-Men to stop their greatest nemesis and save mankind from complete destruction.</string>
-
+    <string name="action_share">Share</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.hung.popmovies;
+package com.example.hung.popmovies.net;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -9,10 +9,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.hung.popmovies.BuildConfig;
+import com.example.hung.popmovies.R;
+import com.example.hung.popmovies.Utility;
 import com.example.hung.popmovies.db.MovieContract;
-import com.example.hung.popmovies.net.ApiServices;
-import com.example.hung.popmovies.net.Movie;
-import com.example.hung.popmovies.net.Movies;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,24 +27,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 
-    String log_tag = this.getClass().getSimpleName();
+    String log = this.getClass().getSimpleName();
     Activity mActivity;
 //    MovieAdapter mAdapter;
 
-    public interface Callbacks{
+    public interface Callbacks {
         void onFetchMoviesFinished();
     }
 
 
-    public FetchMoviesTask(Activity activity){
+    public FetchMoviesTask(Activity activity) {
         mActivity = activity;
     }
+
     @Override
     protected ArrayList<Movie> doInBackground(Void... params) {
 
 //        HttpURLConnection urlConnection = null;
 //        BufferedReader reader = null;
-        String SortBy = Utility.getSortByType(mActivity);
+        String sortByType = Utility.getSortByType(mActivity);
 //
 //        // Will contain the raw JSON response as a string.
 //        String resultJson = null;
@@ -56,12 +57,12 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 ////            String apiKey = "api_key";
 //////            String sortBy = "sort_by";
 ////            Uri builtUri = Uri.parse(baseUrl).buildUpon()
-////                    .appendPath(SortBy)
+////                    .appendPath(sortByType)
 ////                    .appendQueryParameter(apiKey,BuildConfig.OPEN_MOVIE_API_KEY)
 ////                    .build();
 ////
 ////            URL url = new URL(builtUri.toString());
-//            Log.v(log_tag,builtUri.toString());
+//            Log.v(log,builtUri.toString());
 //
 //            urlConnection = (HttpURLConnection) url.openConnection();
 //            urlConnection.setRequestMethod("GET");
@@ -87,7 +88,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 //            }
 //            resultJson = buffer.toString();
 //        }catch (Exception e){
-//            Log.e(log_tag, "error", e);
+//            Log.e(log, "error", e);
 //        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/")
@@ -95,8 +96,8 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
                 .build();
 
         ApiServices service = retrofit.create(ApiServices.class);
-//        Log.v(log_tag, SortBy);
-        Call<Movies> call = service.getMovies(SortBy,BuildConfig.OPEN_MOVIE_API_KEY);
+//        Log.v(log, sortByType);
+        Call<Movies> call = service.getMovies(sortByType, BuildConfig.OPEN_MOVIE_API_KEY);
 
         try {
             Response<Movies> response = call.execute();
@@ -105,21 +106,23 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
             ArrayList<Movie> arrayMovies = movies.getMovies();
             ContentValues[] arrayContentValues = new ContentValues[arrayMovies.size()];
 
-            if(arrayMovies.size()!=0){
+            if (arrayMovies.size() != 0) {
 
 
-                for(int i = 0; i < arrayMovies.size(); i++){
+                for (int i = 0; i < arrayMovies.size(); i++) {
                     Movie movie = arrayMovies.get(i);
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(MovieContract.MovieEntry.SORT_BY, SortBy);
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_ID, movie.getId());
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, movie.getTitle());
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER, movie.getPoster());
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, movie.getOverview());
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_USER_RATING, movie.getUserRating());
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getReleaseDate());
-                    contentValues.put(MovieContract.MovieEntry.MOVIE_BACKDROP_PATH, movie.getBackdrop());
-                    arrayContentValues[i] = contentValues;
+//                    ContentValues contentValues = new ContentValues();
+//                    contentValues.put(MovieContract.MovieEntry.SORT_BY, sortByType);
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_ID, movie.getId());
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, movie.getTitle());
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER, movie.getPoster());
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, movie.getOverview());
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_USER_RATING, movie.getUserRating());
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getReleaseDate());
+//                    contentValues.put(MovieContract.MovieEntry.MOVIE_BACKDROP_PATH, movie.getBackdrop());
+//                    arrayContentValues[i] = contentValues;
+
+                    arrayContentValues[i] = Utility.getContentValueFromMovie(movie, sortByType);
                 }
             }
 
@@ -128,18 +131,18 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 
             // update to database
             if (arrayContentValues.length > 0) {
-                Uri uri = MovieContract.MovieEntry.getMoviesUriFromSortByType(SortBy);
-                deleted = mActivity.getContentResolver().delete(uri,null,null);
+                Uri uri = MovieContract.MovieEntry.getMoviesUriFromSortByType(sortByType);
+                deleted = mActivity.getContentResolver().delete(uri, null, null);
                 inserted = mActivity.getContentResolver().bulkInsert(uri, arrayContentValues);
             }
-            Log.d(log_tag, deleted + "Movies deleted from db");
+            Log.d(log, deleted + "Movies deleted from db");
 
-            Log.d(log_tag, "FetchMoviesTask complete. " + inserted + " Inserted");
+            Log.d(log, "FetchMoviesTask complete. " + inserted + " Inserted");
 
             return arrayMovies;
 
         } catch (IOException e) {
-            Log.e(log_tag, "A problem occurred talking to the movie db ", e);
+            Log.e(log, "A problem occurred talking to the movie db ", e);
             return null;
         }
     }
@@ -148,11 +151,11 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
     @Override
     protected void onPostExecute(ArrayList<Movie> moviePosterPathArray) {
         super.onPostExecute(moviePosterPathArray);
-        RecyclerView recyclerView = (RecyclerView)mActivity.findViewById(R.id.movie_list);
-        TextView textView =(TextView) mActivity.findViewById(R.id.warning_missing_internet);
+        RecyclerView recyclerView = (RecyclerView) mActivity.findViewById(R.id.movie_list);
+        TextView textView = (TextView) mActivity.findViewById(R.id.warning_missing_internet);
 
-        if(moviePosterPathArray!=null){
-            ((Callbacks)mActivity).onFetchMoviesFinished();
+        if (moviePosterPathArray != null) {
+            ((Callbacks) mActivity).onFetchMoviesFinished();
             recyclerView.setVisibility(View.VISIBLE);
             textView.setVisibility(View.INVISIBLE);
         } else {
@@ -179,7 +182,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 //            JSONObject jsonObjectResult = new JSONObject(resultJson);
 //            JSONArray moviesArray = jsonObjectResult.getJSONArray(FMT_Array);
 //
-//            Log.v(log_tag, moviesArray.length() + "");
+//            Log.v(log, moviesArray.length() + "");
 ////            moviePosterPathArray = new String[moviesArray.length()];
 //
 //            for (int i = 0 ; i<moviesArray.length();i++){
@@ -197,10 +200,9 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 //            }
 //
 //        }catch (JSONException e){
-//            Log.v(log_tag, "error: ", e);
+//            Log.v(log, "error: ", e);
 //            return  null;
 //        }
-
 
 
 //        return movieArrayFromJason;

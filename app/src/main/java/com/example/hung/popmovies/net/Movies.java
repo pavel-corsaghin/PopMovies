@@ -23,10 +23,10 @@ import java.util.ArrayList;
 public class Movies {
 
     @SerializedName("results")
-    private ArrayList<Movie> movies = new ArrayList<>();
+    private ArrayList<Movie> mMovies = new ArrayList<>();
 
     public ArrayList<Movie> getMovies() {
-        return movies;
+        return mMovies;
     }
 }
 

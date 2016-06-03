@@ -4,9 +4,6 @@
     <color name="colorPrimaryDark">	#000000</color>
     <!--<color name="colorPrimary">#ff1ca8f4</color>-->
     <color name="colorAccent">#64FFDA</color>
-    <color name="empty_view_text_color">#BDBDBD</color>
-    <color name="text_color_for_movie_overview">@android:color/black</color>
-    <color name="text_color_for_review_content">@android:color/black</color>
     <color name="red">#F44336</color>
     <color name="blue">#0288D1</color>
 
