@@ -1,6 +1,7 @@
 package com.example.hung.popmovies;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -28,9 +29,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onMovieSelected(Movie movie);
     }
 
-    public MovieAdapter(ArrayList<Movie> movies, Context activity) {
+    public MovieAdapter(ArrayList<Movie> movies, Activity activity) {
         mMovies = movies;
-        mCallbacks = (Callbacks) activity;
+        mCallbacks = (Callbacks)activity;
     }
 
     @Override
