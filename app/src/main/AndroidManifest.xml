@@ -16,6 +16,10 @@
             android:exported="false"
             android:syncable="true" />
 
+        <service android:name=".service.MovieService"/>
+
+        <receiver android:name=".service.MovieService$AlarmReceiver" android:enabled="true"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

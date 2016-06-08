@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.example.hung.popmovies.db.MovieContract.MovieEntry;
 
@@ -65,10 +64,10 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor = null;
-        int testMatch = mUriMatcher.match(uri);
+//        int testMatch = mUriMatcher.match(uri);
         String sortBy = MovieEntry.getSortByTypeFromUri(uri);
-        Log.v(log, uri + "");
-        Log.v(log, testMatch + "");
+//        Log.v(log, uri + "");
+//        Log.v(log, testMatch + "");
         switch (mUriMatcher.match(uri)){
             //"movies"
             case MOVIES:

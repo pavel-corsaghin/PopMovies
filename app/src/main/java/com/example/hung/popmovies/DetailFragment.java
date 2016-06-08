@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hung.popmovies.db.MovieContract;
 import com.example.hung.popmovies.net.FetchReviewsTask;
@@ -145,17 +146,21 @@ public class DetailFragment extends Fragment implements FetchReviewsTask.Callbac
             mWatchTrailer.setOnClickListener(new myOnclickListener());
 
             //fetch trailer and fill to trailers list
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            mRecyclerView.setLayoutManager(layoutManager);
-            mTrailerAdapter = new TrailerAdapter(new ArrayList<Trailer>());
-            mRecyclerView.setAdapter(mTrailerAdapter);
-            FetchTrailersTask fetchTrailersTask = new FetchTrailersTask(this);
-            fetchTrailersTask.execute(String.valueOf(mMovie.getId()));
+            if(Utility.isInternetAvailable()){
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                mRecyclerView.setLayoutManager(layoutManager);
+                mTrailerAdapter = new TrailerAdapter(new ArrayList<Trailer>());
+                mRecyclerView.setAdapter(mTrailerAdapter);
+                FetchTrailersTask fetchTrailersTask = new FetchTrailersTask(this);
+                fetchTrailersTask.execute(String.valueOf(mMovie.getId()));
 
-            //fetch reviews and fill to reviews list
-            FetchReviewsTask fetchReviewsTask = new FetchReviewsTask(this);
-            fetchReviewsTask.execute(String.valueOf(mMovie.getId()));
+                //fetch reviews and fill to reviews list
+                FetchReviewsTask fetchReviewsTask = new FetchReviewsTask(this);
+                fetchReviewsTask.execute(String.valueOf(mMovie.getId()));
+            }else {
+                Toast.makeText(getContext(),"Internet connection is missing",Toast.LENGTH_LONG).show();
+            }
 
         } else {
             Log.v(log, " Unknown error!");

@@ -15,6 +15,7 @@ import com.example.hung.popmovies.db.MovieContract;
 import com.example.hung.popmovies.db.MovieContract.MovieEntry;
 import com.example.hung.popmovies.net.Movie;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
@@ -25,6 +26,7 @@ public class Utility {
     public final static String MOST_POPULAR = "popular";
     public final static String TOP_RATED = "top_rated";
     public final static String FAVORITES = "favorites";
+    public final static String SORT_BY = "sort_by";
     public final static String MOVIE = "movie";
     public static final float POSTER_ASPECT_RATIO = 1.5f;
 
@@ -33,18 +35,16 @@ public class Utility {
 //        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
-        String key = context.getResources().getString(R.string.sort_by);
-        editor.putString(key, sortByType);
+        editor.putString(SORT_BY, sortByType);
         editor.apply();
     }
 
-    public static String getSortByType(Activity context) {
+    public static String getSortByType(Context context) {
 //        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
 //        String key = context.getResources().getString(R.string.sort_by);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String key = context.getResources().getString(R.string.sort_by);
-        if (sharedPref.contains(key)) {
-            return sharedPref.getString(key, MOST_POPULAR);
+        if (sharedPref.contains(SORT_BY)) {
+            return sharedPref.getString(SORT_BY, MOST_POPULAR);
         } else return null;
     }
 
@@ -110,7 +110,7 @@ public class Utility {
         return contentValues;
     }
 
-    public static void watchTrailerOnYoutube(String key, Context context){
+    public static void watchTrailerOnYoutube(String key, Context context) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("vnd.youtube:" + key));
@@ -122,7 +122,7 @@ public class Utility {
         }
     }
 
-//    public static boolean setListViewHeightBasedOnItems(ListView listView) {
+    //    public static boolean setListViewHeightBasedOnItems(ListView listView) {
 //
 //        ListAdapter listAdapter = listView.getAdapter();
 //        if (listAdapter != null) {
@@ -154,4 +154,20 @@ public class Utility {
 //        }
 //
 //    }
+    public static boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+
+            if (ipAddr.equals("")) {
+                return false;
+            } else {
+                return true;
+            }
+            //return (!ipAddr.equals(""))
+
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
 }

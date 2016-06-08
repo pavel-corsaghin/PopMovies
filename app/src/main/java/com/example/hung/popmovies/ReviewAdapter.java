@@ -15,6 +15,8 @@ import java.util.ArrayList;
 /**
  * Created by phoenix on 02/06/2016.
  */
+
+//this class now no used)))
 public class ReviewAdapter extends ArrayAdapter<Review> {
     private String log = ReviewAdapter.class.getSimpleName();
     ArrayList<Review> mReviews;
